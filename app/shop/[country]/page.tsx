@@ -1,33 +1,36 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import PackageCard from "@/components/PackageCard";
 import type { EsimPackage } from "@/lib/esim-client";
 
-const COUNTRY_META: Record<string, { name: string; flag: string }> = {
-  jp: { name: "Япон", flag: "🇯🇵" },
-  kr: { name: "Солонгос", flag: "🇰🇷" },
-  th: { name: "Тайланд", flag: "🇹🇭" },
-  sg: { name: "Сингапур", flag: "🇸🇬" },
-  us: { name: "АНУ", flag: "🇺🇸" },
-  cn: { name: "Хятад", flag: "🇨🇳" },
-  tr: { name: "Турк", flag: "🇹🇷" },
-  de: { name: "Герман", flag: "🇩🇪" },
-  gb: { name: "Их Британи", flag: "🇬🇧" },
-  au: { name: "Австрали", flag: "🇦🇺" },
-  my: { name: "Малайз", flag: "🇲🇾" },
-  vn: { name: "Вьетнам", flag: "🇻🇳" },
-  fr: { name: "Франц", flag: "🇫🇷" },
-  it: { name: "Итали", flag: "🇮🇹" },
-  es: { name: "Испани", flag: "🇪🇸" },
-  id: { name: "Индонез", flag: "🇮🇩" },
-  in: { name: "Энэтхэг", flag: "🇮🇳" },
-  ph: { name: "Филиппин", flag: "🇵🇭" },
-  hk: { name: "Хонг Конг", flag: "🇭🇰" },
-  tw: { name: "Тайвань", flag: "🇹🇼" },
-  sa: { name: "Саудын Араб", flag: "🇸🇦" },
-  ae: { name: "АНЭУ", flag: "🇦🇪" },
+const COUNTRY_META: Record<string, { name: string; flag: string; image: string; fallbackImage?: string }> = {
+  jp: { name: "Япон", flag: "🇯🇵", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=1200" },
+  kr: { name: "Солонгос", flag: "🇰🇷", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&q=80&w=1200" },
+  th: { name: "Тайланд", flag: "🇹🇭", image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=1200" },
+  sg: { name: "Сингапур", flag: "🇸🇬", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&q=80&w=1200" },
+  us: { name: "АНУ", flag: "🇺🇸", image: "https://images.unsplash.com/photo-1480714378408-67cf0d13f9cb?auto=format&fit=crop&q=80&w=1200" },
+  cn: { name: "Хятад", flag: "🇨🇳", image: "https://images.unsplash.com/photo-1508804185872-d7bad8001acd?auto=format&fit=crop&q=80&w=1200" },
+  tr: { name: "Турк", flag: "🇹🇷", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a088f?auto=format&fit=crop&q=80&w=1200" },
+  de: { name: "Герман", flag: "🇩🇪", image: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&q=80&w=1200" },
+  gb: { name: "Их Британи", flag: "🇬🇧", image: "https://images.unsplash.com/photo-1513635269975-59693e0ce1b1?auto=format&fit=crop&q=80&w=1200" },
+  au: { name: "Австрали", flag: "🇦🇺", image: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&q=80&w=1200" },
+  my: { name: "Малайз", flag: "🇲🇾", image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&q=80&w=1200" },
+  vn: { name: "Вьетнам", flag: "🇻🇳", image: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=1200" },
+  fr: { name: "Франц", flag: "🇫🇷", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=1200" },
+  it: { name: "Итали", flag: "🇮🇹", image: "https://images.unsplash.com/photo-1498503182468-3b51cbb3cbcd?auto=format&fit=crop&q=80&w=1200" },
+  es: { name: "Испани", flag: "🇪🇸", image: "https://images.unsplash.com/photo-1543783207-1166ed58c339?auto=format&fit=crop&q=80&w=1200" },
+  id: { name: "Индонез", flag: "🇮🇩", image: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?auto=format&fit=crop&q=80&w=1200" },
+  in: { name: "Энэтхэг", flag: "🇮🇳", image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=1200" },
+  ph: { name: "Филиппин", flag: "🇵🇭", image: "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&q=80&w=1200" },
+  hk: { name: "Хонг Конг", flag: "🇭🇰", image: "https://images.unsplash.com/photo-1516893676001-52fdf7605797?auto=format&fit=crop&q=80&w=1200" },
+  tw: { name: "Тайвань", flag: "🇹🇼", image: "https://images.unsplash.com/photo-1552993873-0402ae1f501e?auto=format&fit=crop&q=80&w=1200" },
+  sa: { name: "Саудын Араб", flag: "🇸🇦", image: "https://images.unsplash.com/photo-1580614131599-2e0081e6490e?auto=format&fit=crop&q=80&w=1200" },
+  ae: { name: "АНЭУ", flag: "🇦🇪", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=1200" },
 };
+
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1500835556837-99ac94a94552?auto=format&fit=crop&q=80&w=1200";
 
 interface PageProps {
   params: Promise<{ country: string }>;
@@ -40,12 +43,21 @@ export default function CountryPackagesPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<EsimPackage | null>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     params.then(({ country: c }) => {
       setCountry(c.toLowerCase());
     });
   }, [params]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!country) return;
@@ -64,7 +76,7 @@ export default function CountryPackagesPage({ params }: PageProps) {
       .finally(() => setLoading(false));
   }, [country]);
 
-  const meta = COUNTRY_META[country] || { name: country.toUpperCase(), flag: "🌐" };
+  const meta = COUNTRY_META[country] || { name: country.toUpperCase(), flag: "🌐", image: DEFAULT_IMAGE };
 
   const handleCheckout = () => {
     if (!selected) return;
@@ -82,66 +94,134 @@ export default function CountryPackagesPage({ params }: PageProps) {
   };
 
   return (
-    <div style={{ paddingTop: "96px", minHeight: "100vh" }}>
-      <div className="container">
-        {/* Back + header */}
-        <button
-          onClick={() => router.back()}
-          style={{
-            background: "none",
-            border: "none",
-            color: "var(--text-muted)",
-            cursor: "pointer",
-            fontSize: 14,
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            marginBottom: "32px",
-            padding: 0,
-          }}
-        >
-          ← Буцах
-        </button>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-body)", paddingBottom: selected ? "120px" : "60px" }}>
+      {/* Floating Back Button */}
+      <button
+        onClick={() => router.back()}
+        style={{
+          position: "fixed",
+          top: "32px",
+          left: "max(24px, calc((100vw - 1200px) / 2))",
+          zIndex: 60,
+          background: scrolled ? "rgba(17, 24, 39, 0.8)" : "rgba(0, 0, 0, 0.3)",
+          backdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          color: "#fff",
+          cursor: "pointer",
+          fontSize: 14,
+          fontWeight: 500,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          transition: "all 0.3s ease",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        }}
+        aria-label="Буцах"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "40px" }}>
-          <div
-            style={{
-              width: 72,
-              height: 48,
-              borderRadius: 8,
-              overflow: "hidden",
-              background: "rgba(255,255,255,0.06)",
-              flexShrink: 0,
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://flagcdn.com/w80/${country}.png`}
-              alt={`${meta.name} далбаа`}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = "none";
-              }}
+      {/* Hero Header */}
+      <div style={{
+        position: 'relative',
+        height: '45vh',
+        minHeight: '380px',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+      }}>
+        {/* Background Image */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+        }}>
+          {country && (
+            <Image
+              src={meta.image}
+              alt={meta.name}
+              fill
+              priority
+              style={{ objectFit: "cover", objectPosition: "center" }}
             />
-          </div>
-
-          <div>
-            <h1
-              style={{
-                fontSize: "clamp(28px, 4vw, 48px)",
-                fontWeight: 900,
-                letterSpacing: "-0.02em",
-                marginBottom: "6px",
-              }}
-            >
-              {meta.name}
-            </h1>
-            <p style={{ color: "var(--text-muted)", fontSize: 15 }}>
-              {loading ? "Ачаалж байна..." : `${packages.length} багц боломжтой`}
-            </p>
-          </div>
+          )}
         </div>
 
+        {/* Gradient Overlay for seamless transition */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 1,
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.5) 50%, var(--bg-body) 100%)',
+        }} />
+
+        {/* Content */}
+        <div className="container" style={{ position: 'relative', zIndex: 2, paddingBottom: '32px' }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <div
+              style={{
+                width: 64,
+                height: 46,
+                borderRadius: 8,
+                overflow: "hidden",
+                background: "rgba(255,255,255,0.1)",
+                boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                flexShrink: 0,
+                border: "2px solid rgba(255,255,255,0.8)"
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {country && (
+                <img
+                  src={`https://flagcdn.com/w80/${country}.png`}
+                  alt={`${meta.name} далбаа`}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              )}
+            </div>
+
+            <div>
+              <h1
+                style={{
+                  fontSize: "clamp(36px, 5vw, 64px)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.03em",
+                  color: "#ffffff",
+                  lineHeight: 1.1,
+                  textShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                  marginBottom: "4px",
+                }}
+              >
+                {meta.name}
+              </h1>
+              <div style={{ 
+                display: "inline-block",
+                padding: "6px 16px",
+                background: "rgba(255,255,255,0.15)",
+                backdropFilter: "blur(8px)",
+                borderRadius: "100px",
+                color: "#f3f4f6", 
+                fontSize: 14,
+                fontWeight: 500,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              }}>
+                {loading ? "Ачаалж байна..." : `${packages.length} багц боломжтой`}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ marginTop: "24px", position: "relative", zIndex: 10 }}>
         {/* Error */}
         {error && (
           <div
@@ -152,9 +232,13 @@ export default function CountryPackagesPage({ params }: PageProps) {
               padding: "20px",
               color: "#f87171",
               marginBottom: "32px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontWeight: 500,
             }}
           >
-            ⚠️ {error}
+            <span style={{ fontSize: 20 }}>⚠️</span> {error}
           </div>
         )}
 
@@ -164,7 +248,7 @@ export default function CountryPackagesPage({ params }: PageProps) {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "16px",
+              gap: "20px",
             }}
           >
             {[...Array(6)].map((_, i) => (
@@ -172,8 +256,8 @@ export default function CountryPackagesPage({ params }: PageProps) {
                 key={i}
                 style={{
                   background: "var(--bg-card)",
-                  borderRadius: 16,
-                  height: 180,
+                  borderRadius: 20,
+                  height: 220,
                   animation: "glow-pulse 1.5s ease infinite",
                   border: "1px solid var(--border)",
                 }}
@@ -186,27 +270,36 @@ export default function CountryPackagesPage({ params }: PageProps) {
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "16px",
+                gap: "20px",
               }}
             >
-              {packages.map((pkg) => (
-                <PackageCard
-                  key={pkg.packageCode}
-                  {...pkg}
-                  selected={selected?.packageCode === pkg.packageCode}
-                  onSelect={() =>
-                    setSelected(
-                      selected?.packageCode === pkg.packageCode ? null : pkg
-                    )
-                  }
-                />
+              {packages.map((pkg, i) => (
+                <div 
+                  key={pkg.packageCode} 
+                  style={{ 
+                    animation: `fade-in-up 0.5s ease forwards ${i * 0.05}s`,
+                    opacity: 0,
+                    transform: "translateY(20px)"
+                  }}
+                >
+                  <PackageCard
+                    {...pkg}
+                    selected={selected?.packageCode === pkg.packageCode}
+                    onSelect={() =>
+                      setSelected(
+                        selected?.packageCode === pkg.packageCode ? null : pkg
+                      )
+                    }
+                  />
+                </div>
               ))}
             </div>
 
             {packages.length === 0 && !error && (
-              <div style={{ textAlign: "center", padding: "80px 0", color: "var(--text-muted)" }}>
-                <div style={{ fontSize: 48, marginBottom: 16 }}>📦</div>
-                <p>Энэ улсад багц байхгүй байна</p>
+              <div style={{ textAlign: "center", padding: "100px 0", color: "var(--text-muted)", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{ fontSize: 64, marginBottom: 24, opacity: 0.5, filter: "grayscale(1)" }}>🌍</div>
+                <h3 style={{ fontSize: 20, fontWeight: 600, color: "var(--text)", marginBottom: 8 }}>Багц олдсонгүй</h3>
+                <p>Уучлаарай, {meta.name} улсад одоогоор багц алга байна.</p>
               </div>
             )}
           </>
@@ -217,40 +310,75 @@ export default function CountryPackagesPage({ params }: PageProps) {
           <div
             style={{
               position: "fixed",
-              bottom: 0,
-              left: 0,
-              right: 0,
+              bottom: 24,
+              left: "50%",
+              transform: "translateX(-50%)",
               zIndex: 50,
-              background: "rgba(17,24,39,0.95)",
-              backdropFilter: "blur(20px)",
-              borderTop: "1px solid var(--border)",
-              padding: "16px 24px",
+              background: "rgba(20, 25, 35, 0.85)",
+              backdropFilter: "blur(24px) saturate(180%)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 100,
+              padding: "16px 24px 16px 32px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: "16px",
-              flexWrap: "wrap",
+              gap: "32px",
+              width: "calc(100% - 48px)",
+              maxWidth: 720,
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05) inset",
+              animation: "slide-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            <div>
-              <p style={{ fontWeight: 700, color: "var(--text)" }}>{selected.name}</p>
-              <p style={{ color: "var(--text-muted)", fontSize: 13 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <p style={{ fontWeight: 700, color: "var(--text)", fontSize: 16 }}>{selected.name}</p>
+              <p style={{ color: "var(--text-muted)", fontSize: 14, fontWeight: 500 }}>
                 {(selected.volume / 1073741824).toFixed(0)} GB ·{" "}
                 {selected.duration} {selected.durationUnit}
               </p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-              <p style={{ fontSize: 22, fontWeight: 800, color: "var(--accent-hover)" }}>
-                ₮{Math.round((selected.price / 10000) * 3450).toLocaleString()}
-              </p>
-              <button onClick={handleCheckout} className="btn-primary" style={{ fontSize: 15 }}>
-                Худалдан авах →
+              <div style={{ textAlign: "right" }}>
+                <p style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 2, textTransform: "uppercase", letterSpacing: 1 }}>Нийт дүн</p>
+                <p style={{ fontSize: 24, fontWeight: 800, color: "var(--accent)", lineHeight: 1 }}>
+                  ₮{Math.round((selected.price / 10000) * 3450).toLocaleString()}
+                </p>
+              </div>
+              <button 
+                onClick={handleCheckout} 
+                className="btn-primary" 
+                style={{ 
+                  fontSize: 16, 
+                  padding: "16px 32px", 
+                  borderRadius: 100,
+                  boxShadow: "0 8px 16px rgba(14, 165, 233, 0.3)",
+                  letterSpacing: "0.5px"
+                }}
+              >
+                Авах →
               </button>
             </div>
           </div>
         )}
-        <div style={{ height: selected ? 100 : 80 }} />
       </div>
+
+      <style jsx global>{`
+        @keyframes fade-in-up {
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slide-up-fade {
+          from {
+            opacity: 0;
+            transform: translate(-50%, 20px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 }
