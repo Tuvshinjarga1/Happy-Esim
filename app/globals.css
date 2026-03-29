@@ -22,10 +22,10 @@
 [data-theme="light"] {
   --bg: #f5f7ff;
   --bg-card: #ffffff;
-  --bg-card-hover: #eef1ff;
-  --border: rgba(0,0,0,0.08);
-  --text: #0d1117;
-  --text-muted: #6b7280;
+  --bg-card-hover: #f0f3ff;
+  --border: rgba(0, 0, 0, 0.15); /* Made darker so it's more visible on white background */
+  --text: #0f172a;
+  --text-muted: #64748b;
   --accent: #4f46e5;
   --accent-hover: #4338ca;
   --accent-glow: rgba(79, 70, 229, 0.18);
@@ -143,6 +143,7 @@ body {
 .badge-accent { background: rgba(99,102,241,0.15); color: var(--accent-hover); }
 .badge-green { background: rgba(16,185,129,0.15); color: var(--green); }
 .badge-yellow { background: rgba(245,158,11,0.15); color: var(--yellow); }
+.badge-gray { background: var(--border); color: var(--text-muted); }
 
 /* ---- Section ---- */
 .section {

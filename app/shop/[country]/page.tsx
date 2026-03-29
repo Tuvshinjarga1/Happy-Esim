@@ -100,7 +100,7 @@ export default function CountryPackagesPage({ params }: PageProps) {
         onClick={() => router.back()}
         style={{
           position: "fixed",
-          top: "32px",
+          top: "96px",
           left: "max(24px, calc((100vw - 1200px) / 2))",
           zIndex: 60,
           background: scrolled ? "rgba(17, 24, 39, 0.8)" : "rgba(0, 0, 0, 0.3)",
