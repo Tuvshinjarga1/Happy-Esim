@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
@@ -114,9 +115,12 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
-          <Link href="/shop" className="btn-primary" style={{ padding: "10px 22px", fontSize: 14 }}>
-            Одоо авах →
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <ThemeToggle />
+            <Link href="/shop" className="btn-primary" style={{ padding: "10px 22px", fontSize: 14 }}>
+              Одоо авах →
+            </Link>
+          </div>
         </div>
 
         {/* Mobile hamburger */}

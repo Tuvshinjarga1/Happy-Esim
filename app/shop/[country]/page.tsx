@@ -104,7 +104,27 @@ export default function CountryPackagesPage({ params }: PageProps) {
         </button>
 
         <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "40px" }}>
-          <div style={{ fontSize: 56 }}>{meta.flag}</div>
+          <div
+            style={{
+              width: 72,
+              height: 48,
+              borderRadius: 8,
+              overflow: "hidden",
+              background: "rgba(255,255,255,0.06)",
+              flexShrink: 0,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://flagcdn.com/w80/${country}.png`}
+              alt={`${meta.name} далбаа`}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = "none";
+              }}
+            />
+          </div>
+
           <div>
             <h1
               style={{

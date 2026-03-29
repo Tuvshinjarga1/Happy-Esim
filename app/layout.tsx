@@ -13,7 +13,22 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="mn">
+    <html lang="mn" data-theme="dark" suppressHydrationWarning>
+      <head>
+        {/* Prevent flash of wrong theme — runs before React hydration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme') || 'dark';
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body>
         <Navbar />
         <main>{children}</main>
@@ -22,3 +37,4 @@ export default function RootLayout({
     </html>
   );
 }
+
