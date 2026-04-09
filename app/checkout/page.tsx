@@ -28,7 +28,7 @@ function CheckoutContent() {
   const duration = Number(searchParams.get("duration") || "0");
   const durationUnit = searchParams.get("durationUnit") || "DAY";
 
-  const mntPrice = currency === "USD" ? toMnt(price) : price;
+  const mntPrice =  price;
 
   const [email, setEmail] = useState("");
   const [step, setStep] = useState<"form" | "payment" | "done">("form");

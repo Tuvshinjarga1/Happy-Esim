@@ -377,7 +377,7 @@ export default function CountryPackagesPage({ params }: PageProps) {
               <div style={{ textAlign: "right" }}>
                 <p style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 2, textTransform: "uppercase", letterSpacing: 1 }}>Нийт дүн</p>
                 <p style={{ fontSize: 24, fontWeight: 800, color: "var(--accent)", lineHeight: 1 }}>
-                  ₮{Math.round((selected.price / 10000) * 3450).toLocaleString()}
+                  ₮{Math.round(selected.price).toLocaleString()}
                 </p>
               </div>
               <button 
