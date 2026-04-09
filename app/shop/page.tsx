@@ -355,20 +355,21 @@ useEffect(() => {
                         transition: "max-height 0.3s ease-in-out"
                       }}
                     >
-                      {countries.map((c:typeof countries[0], index:number) => (
-                        <div
-                        ref={card}
+                      {countries.map((c:typeof countries[0], index:number) => {
+                        if (!isExpanded && index >= 5) return null;
+
+                        return <div
+                        ref={index === 0?card:null}
                           key={c.code}
                           style={{
-                            opacity: isExpanded || index < 5 ? 1 : 0,
-                            transform: isExpanded || index < 5 ? "translateY(0)" : "translateY(20px)",
-                            transition: "all 0.3s ease-out",
-                            transitionDelay: isExpanded && index >= 5 ? `${(index - 4) * 0.05}s` : "0s"
+                            animation: isExpanded && index >= 5 
+                          ? 'fadeInUp 0.3s ease-out forwards'
+                          : 'none',
                           }}
                         >
                           <CountryCard {...c} />
                         </div>
-                      ))}
+            })}
                     </div>
                   </div>
                   {hasMore && (
@@ -417,10 +418,14 @@ useEffect(() => {
             }}
           >
             <div style={{ fontSize: 48, marginBottom: "16px" }}>🌐</div>
+            {allCountry.length == 0?<p style={{ fontSize: 18, fontWeight: 600, marginBottom: "8px" }}>
+             Уншиж байна
+            </p>:<>
             <p style={{ fontSize: 18, fontWeight: 600, marginBottom: "8px" }}>
-              Улс олдсонгүй
+             Улс олдсонгүй
             </p>
             <p style={{ fontSize: 14 }}>Өөр нэрээр хайж үзнэ үү</p>
+            </>}
           </div>
         )}
 
@@ -429,3 +434,17 @@ useEffect(() => {
     </div>
   );
 }
+
+
+<style jsx>{`
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`}</style>
