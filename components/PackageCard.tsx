@@ -9,6 +9,7 @@ interface PackageCardProps {
   speed?: string;
   onSelect?: () => void;
   selected?: boolean;
+  ipExport:string
 }
 
 function formatBytes(bytes: number): string {
@@ -40,9 +41,10 @@ export default function PackageCard({
   speed,
   onSelect,
   selected,
+  ipExport
 }: PackageCardProps) {
-  const displayPrice =
-    currencyCode === "USD" ? toMnt(price) : price;
+  const displayPrice =price
+    // currencyCode === "USD" ? toMnt(price) : price;
 
   return (
     <div
@@ -59,6 +61,7 @@ export default function PackageCard({
     >
       {/* Header badges */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
+        {/* <span className="badge badge-accent">{ipExport}</span> */}
         <span className="badge badge-accent">{formatBytes(volume)}</span>
         <span className="badge badge-green">{formatDuration(duration, durationUnit)}</span>
         {speed && (

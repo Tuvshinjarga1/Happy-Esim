@@ -19,7 +19,7 @@ export default function CountryCard({
   packageCount,
 }: CountryCardProps) {
   const [imgError, setImgError] = useState(false);
-  const flagUrl = `https://flagcdn.com/w320/${code.toLowerCase()}.png`;
+  const flagUrl = `https://flagcdn.com/${code.toLowerCase()}.svg`;
 
   return (
     <Link href={`/shop/${code.toLowerCase()}`} style={{ textDecoration: "none" }}>

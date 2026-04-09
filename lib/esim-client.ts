@@ -66,6 +66,7 @@ async function esimFetch<T>(
 }
 
 export interface EsimPackage {
+  // favorite: boolean;
   packageCode: string;
   slug: string;
   name: string;

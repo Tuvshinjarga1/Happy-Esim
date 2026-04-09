@@ -44,6 +44,7 @@ export default function CountryPackagesPage({ params }: PageProps) {
   const [error, setError] = useState("");
   const [selected, setSelected] = useState<EsimPackage | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [duration, setDuration] = useState([])
 
   useEffect(() => {
     params.then(({ country: c }) => {
@@ -67,6 +68,8 @@ export default function CountryPackagesPage({ params }: PageProps) {
       .then((r) => r.json())
       .then((data) => {
         if (data.success) {
+          console.log(data.data);
+          
           setPackages(data.data?.packageList || []);
         } else {
           setError(data.message || "Алдаа гарлаа");
@@ -92,6 +95,19 @@ export default function CountryPackagesPage({ params }: PageProps) {
     });
     router.push(`/checkout?${params.toString()}`);
   };
+
+  // Group packages by duration
+  const groupedPackages = packages.reduce((acc, pkg) => {
+    const key = pkg.duration;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(pkg);
+    return acc;
+  }, {} as Record<string, EsimPackage[]>);
+
+  // Sort duration keys in ascending order
+  const sortedDurationKeys = Object.keys(groupedPackages).sort((a, b) => parseInt(a) - parseInt(b));
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-body)", paddingBottom: selected ? "120px" : "60px" }}>
@@ -266,34 +282,55 @@ export default function CountryPackagesPage({ params }: PageProps) {
           </div>
         ) : (
           <>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "20px",
-              }}
-            >
-              {packages.map((pkg, i) => (
-                <div 
-                  key={pkg.packageCode} 
-                  style={{ 
-                    animation: `fade-in-up 0.5s ease forwards ${i * 0.05}s`,
-                    opacity: 0,
-                    transform: "translateY(20px)"
-                  }}
-                >
-                  <PackageCard
-                    {...pkg}
-                    selected={selected?.packageCode === pkg.packageCode}
-                    onSelect={() =>
-                      setSelected(
-                        selected?.packageCode === pkg.packageCode ? null : pkg
-                      )
-                    }
-                  />
+            {sortedDurationKeys.map((duration, index) => {
+              const durationPackages = groupedPackages[duration];
+              const firstPackage = durationPackages[0];
+              const durationUnit = firstPackage?.durationUnit || '';
+              
+              return (
+                <div key={duration} style={{ marginBottom: "40px" }}>
+                  {/* Duration Header */}
+                  <h2 style={{
+                    fontSize: "24px",
+                    fontWeight: 700,
+                    color: "var(--text)",
+                    marginBottom: "20px",
+                    paddingBottom: "12px",
+                    borderBottom: "1px solid var(--border)",
+                  }}>
+                    {duration} {durationUnit}
+                  </h2>
+                  
+                  {/* Packages Grid */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                      gap: "20px",
+                    }}
+                  >
+                    {durationPackages.map((pkg, i) => (
+                      <div 
+                        key={pkg.packageCode} 
+                        style={{ 
+                          animation: `fade-in-up 0.5s ease forwards ${(index * 0.1) + (i * 0.05)}s`,
+                          opacity: 0,
+                          transform: "translateY(20px)"
+                        }}
+                      >
+                        <PackageCard
+                          ipExport={""} {...pkg}
+                          selected={selected?.packageCode === pkg.packageCode}
+                          onSelect={() => setSelected(
+                            selected?.packageCode === pkg.packageCode ? null : pkg
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
 
             {packages.length === 0 && !error && (
               <div style={{ textAlign: "center", padding: "100px 0", color: "var(--text-muted)", display: "flex", flexDirection: "column", alignItems: "center" }}>
